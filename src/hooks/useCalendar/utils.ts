@@ -22,7 +22,6 @@ import { Year, Month, Week, Day, DAY_INDEX } from './types';
 
 function getDay({ date }: { date: Date }): Day {
   return {
-    date,
     dayOfWeek: format(date, 'EEEE'),
     dayOfMonth: getDate(date),
     dayOfYear: getDayOfYear(date),

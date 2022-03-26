@@ -2,14 +2,14 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Provider, ProviderProps, Context } from './Context';
 
-function Calendar({ id, ...rest }: ProviderProps) {
-  return <Provider id={id} {...rest} />;
+function Calendar(props: ProviderProps) {
+  return <Provider {...props} />;
 }
 
 function Month({ children }) {
-  const { weeks, monthOfYear } = useContext(Context);
+  const { weeks, monthOfYear, prev, next } = useContext(Context);
 
-  return children({ weeks, monthOfYear });
+  return children({ weeks, monthOfYear, prev, next });
 }
 
 Calendar.displayName = 'Calendar';

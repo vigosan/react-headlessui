@@ -1,3 +1,4 @@
+import { act } from 'react-dom/test-utils';
 import { renderHook } from '@testing-library/react-hooks';
 import useCalendar from './useCalendar';
 
@@ -7,11 +8,14 @@ describe('useCalendar', function () {
       'Sun Mar 20 2022 19:45:00 GMT+0100 (Central European Standard Time)';
     const date = new Date(thatDay);
     const { result } = renderHook(() =>
-      useCalendar({ date, type: 'month', weekStartsOn: 0 }),
+      useCalendar({ date, view: 'month', weekStartsOn: 0 }),
     );
     const [month] = result.current;
 
     expect(month).toEqual({
+      date: new Date('2022-03-20T18:45:00.000Z'),
+      weekStartsOn: 0,
+      view: 'month',
       monthOfYear: 'March',
       daysInMonth: 31,
       isCurrent: true,
@@ -21,7 +25,6 @@ describe('useCalendar', function () {
           isCurrent: false,
           days: [
             {
-              date: new Date('2022-02-26T23:00:00.000Z'),
               dayOfWeek: 'Sunday',
               dayOfMonth: 27,
               dayOfYear: 58,
@@ -29,7 +32,6 @@ describe('useCalendar', function () {
               isWeekend: true,
             },
             {
-              date: new Date('2022-02-27T23:00:00.000Z'),
               dayOfWeek: 'Monday',
               dayOfMonth: 28,
               dayOfYear: 59,
@@ -37,7 +39,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-02-28T23:00:00.000Z'),
               dayOfWeek: 'Tuesday',
               dayOfMonth: 1,
               dayOfYear: 60,
@@ -45,7 +46,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-01T23:00:00.000Z'),
               dayOfWeek: 'Wednesday',
               dayOfMonth: 2,
               dayOfYear: 61,
@@ -53,7 +53,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-02T23:00:00.000Z'),
               dayOfWeek: 'Thursday',
               dayOfMonth: 3,
               dayOfYear: 62,
@@ -61,7 +60,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-03T23:00:00.000Z'),
               dayOfWeek: 'Friday',
               dayOfMonth: 4,
               dayOfYear: 63,
@@ -69,7 +67,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-04T23:00:00.000Z'),
               dayOfWeek: 'Saturday',
               dayOfMonth: 5,
               dayOfYear: 64,
@@ -83,7 +80,6 @@ describe('useCalendar', function () {
           isCurrent: false,
           days: [
             {
-              date: new Date('2022-03-05T23:00:00.000Z'),
               dayOfWeek: 'Sunday',
               dayOfMonth: 6,
               dayOfYear: 65,
@@ -91,7 +87,6 @@ describe('useCalendar', function () {
               isWeekend: true,
             },
             {
-              date: new Date('2022-03-06T23:00:00.000Z'),
               dayOfWeek: 'Monday',
               dayOfMonth: 7,
               dayOfYear: 66,
@@ -99,7 +94,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-07T23:00:00.000Z'),
               dayOfWeek: 'Tuesday',
               dayOfMonth: 8,
               dayOfYear: 67,
@@ -107,7 +101,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-08T23:00:00.000Z'),
               dayOfWeek: 'Wednesday',
               dayOfMonth: 9,
               dayOfYear: 68,
@@ -115,7 +108,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-09T23:00:00.000Z'),
               dayOfWeek: 'Thursday',
               dayOfMonth: 10,
               dayOfYear: 69,
@@ -123,7 +115,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-10T23:00:00.000Z'),
               dayOfWeek: 'Friday',
               dayOfMonth: 11,
               dayOfYear: 70,
@@ -131,7 +122,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-11T23:00:00.000Z'),
               dayOfWeek: 'Saturday',
               dayOfMonth: 12,
               dayOfYear: 71,
@@ -145,7 +135,6 @@ describe('useCalendar', function () {
           isCurrent: false,
           days: [
             {
-              date: new Date('2022-03-12T23:00:00.000Z'),
               dayOfWeek: 'Sunday',
               dayOfMonth: 13,
               dayOfYear: 72,
@@ -153,7 +142,6 @@ describe('useCalendar', function () {
               isWeekend: true,
             },
             {
-              date: new Date('2022-03-13T23:00:00.000Z'),
               dayOfWeek: 'Monday',
               dayOfMonth: 14,
               dayOfYear: 73,
@@ -161,7 +149,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-14T23:00:00.000Z'),
               dayOfWeek: 'Tuesday',
               dayOfMonth: 15,
               dayOfYear: 74,
@@ -169,7 +156,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-15T23:00:00.000Z'),
               dayOfWeek: 'Wednesday',
               dayOfMonth: 16,
               dayOfYear: 75,
@@ -177,7 +163,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-16T23:00:00.000Z'),
               dayOfWeek: 'Thursday',
               dayOfMonth: 17,
               dayOfYear: 76,
@@ -185,7 +170,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-17T23:00:00.000Z'),
               dayOfWeek: 'Friday',
               dayOfMonth: 18,
               dayOfYear: 77,
@@ -193,7 +177,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-18T23:00:00.000Z'),
               dayOfWeek: 'Saturday',
               dayOfMonth: 19,
               dayOfYear: 78,
@@ -207,7 +190,6 @@ describe('useCalendar', function () {
           isCurrent: true,
           days: [
             {
-              date: new Date('2022-03-19T23:00:00.000Z'),
               dayOfWeek: 'Sunday',
               dayOfMonth: 20,
               dayOfYear: 79,
@@ -215,7 +197,6 @@ describe('useCalendar', function () {
               isWeekend: true,
             },
             {
-              date: new Date('2022-03-20T23:00:00.000Z'),
               dayOfWeek: 'Monday',
               dayOfMonth: 21,
               dayOfYear: 80,
@@ -223,7 +204,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-21T23:00:00.000Z'),
               dayOfWeek: 'Tuesday',
               dayOfMonth: 22,
               dayOfYear: 81,
@@ -231,7 +211,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-22T23:00:00.000Z'),
               dayOfWeek: 'Wednesday',
               dayOfMonth: 23,
               dayOfYear: 82,
@@ -239,7 +218,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-23T23:00:00.000Z'),
               dayOfWeek: 'Thursday',
               dayOfMonth: 24,
               dayOfYear: 83,
@@ -247,7 +225,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-24T23:00:00.000Z'),
               dayOfWeek: 'Friday',
               dayOfMonth: 25,
               dayOfYear: 84,
@@ -255,7 +232,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-25T23:00:00.000Z'),
               dayOfWeek: 'Saturday',
               dayOfMonth: 26,
               dayOfYear: 85,
@@ -269,7 +245,6 @@ describe('useCalendar', function () {
           isCurrent: false,
           days: [
             {
-              date: new Date('2022-03-26T23:00:00.000Z'),
               dayOfWeek: 'Sunday',
               dayOfMonth: 27,
               dayOfYear: 86,
@@ -277,7 +252,6 @@ describe('useCalendar', function () {
               isWeekend: true,
             },
             {
-              date: new Date('2022-03-27T22:00:00.000Z'),
               dayOfWeek: 'Monday',
               dayOfMonth: 28,
               dayOfYear: 87,
@@ -285,7 +259,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-28T22:00:00.000Z'),
               dayOfWeek: 'Tuesday',
               dayOfMonth: 29,
               dayOfYear: 88,
@@ -293,7 +266,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-29T22:00:00.000Z'),
               dayOfWeek: 'Wednesday',
               dayOfMonth: 30,
               dayOfYear: 89,
@@ -301,7 +273,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-30T22:00:00.000Z'),
               dayOfWeek: 'Thursday',
               dayOfMonth: 31,
               dayOfYear: 90,
@@ -309,7 +280,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-03-31T22:00:00.000Z'),
               dayOfWeek: 'Friday',
               dayOfMonth: 1,
               dayOfYear: 91,
@@ -317,7 +287,6 @@ describe('useCalendar', function () {
               isWeekend: false,
             },
             {
-              date: new Date('2022-04-01T22:00:00.000Z'),
               dayOfWeek: 'Saturday',
               dayOfMonth: 2,
               dayOfYear: 92,
@@ -335,12 +304,65 @@ describe('useCalendar', function () {
       'Sun Mar 20 2022 19:45:00 GMT+0100 (Central European Standard Time)';
     const date = new Date(thatDay);
     const { result } = renderHook(() =>
-      useCalendar({ date, type: 'day', weekStartsOn: 0 }),
+      useCalendar({ date, view: 'day', weekStartsOn: 0 }),
     );
-    const [day] = result.current;
+    const [day, { next, prev }] = result.current;
 
     expect(day).toEqual({
       date: new Date('2022-03-20T18:45:00.000Z'),
+      view: 'day',
+      weekStartsOn: 0,
+      dayOfMonth: 20,
+      dayOfWeek: 'Sunday',
+      dayOfYear: 79,
+      isToday: false,
+      isWeekend: true,
+    });
+  });
+
+  test('next day', function () {
+    const thatDay =
+      'Sun Mar 19 2022 19:45:00 GMT+0100 (Central European Standard Time)';
+    const date = new Date(thatDay);
+    const { result } = renderHook(() =>
+      useCalendar({ date, view: 'day', weekStartsOn: 0 }),
+    );
+
+    let [day, { next }] = result.current;
+
+    act(next);
+
+    [day] = result.current;
+
+    expect(day).toEqual({
+      date: new Date('2022-03-20T18:45:00.000Z'),
+      view: 'day',
+      weekStartsOn: 0,
+      dayOfMonth: 20,
+      dayOfWeek: 'Sunday',
+      dayOfYear: 79,
+      isToday: false,
+      isWeekend: true,
+    });
+  });
+
+  test('prev day', function () {
+    const thatDay =
+      'Sun Mar 21 2022 19:45:00 GMT+0100 (Central European Standard Time)';
+    const date = new Date(thatDay);
+    const { result } = renderHook(() =>
+      useCalendar({ date, view: 'day', weekStartsOn: 0 }),
+    );
+
+    let [day, { prev }] = result.current;
+
+    act(prev);
+    [day] = result.current;
+
+    expect(day).toEqual({
+      date: new Date('2022-03-20T18:45:00.000Z'),
+      view: 'day',
+      weekStartsOn: 0,
       dayOfMonth: 20,
       dayOfWeek: 'Sunday',
       dayOfYear: 79,

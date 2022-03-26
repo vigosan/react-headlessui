@@ -1,69 +1,101 @@
+// @ts-nocheck
 import { useReducer } from 'react';
 import { getYear, getMonth, getWeek, getDay } from './utils';
-import {
-  CALENDAR_TYPE,
-  ACTION_TYPE,
-  DAY_INDEX,
-  Year,
-  Month,
-  Week,
-  Day,
-} from './types';
+import { addMonths, addDays } from 'date-fns';
+import { CALENDAR_VIEW, ACTION_TYPE, DAY_INDEX } from './types';
 
 const initialState = {};
 
 function init({
   date,
-  type,
+  view,
   weekStartsOn,
 }: {
   date: Date;
-  type: CALENDAR_TYPE;
+  view: CALENDAR_VIEW;
   weekStartsOn: DAY_INDEX;
-}): Year | Month | Week | Day {
-  switch (type) {
+}) {
+  switch (view) {
     case 'year': {
-      return getYear({ date, weekStartsOn }) as Year;
+      return { date, weekStartsOn, view, ...getYear({ date, weekStartsOn }) };
     }
     case 'month': {
-      return getMonth({ date, weekStartsOn }) as Month;
+      return { date, weekStartsOn, view, ...getMonth({ date, weekStartsOn }) };
     }
     case 'week': {
-      return getWeek({ date }) as Week;
+      return { date, weekStartsOn, view, ...getWeek({ date }) };
     }
     case 'day': {
-      return getDay({ date }) as Day;
+      return { date, weekStartsOn, view, ...getDay({ date }) };
     }
   }
 }
 
 function reducer(state: typeof initialState, action: ACTION_TYPE) {
   switch (action.type) {
-    case 'SET_DATE':
-      return state;
-    case 'NEXT':
-      return state;
-    case 'PREV':
-      return state;
-    default:
-      return state;
+    case 'NEXT': {
+      switch (state.view) {
+        case 'year': {
+          return init({ ...state, date: addMonths(state.date, 12) });
+        }
+        case 'month': {
+          return init({ ...state, date: addMonths(state.date, 1) });
+        }
+        case 'week': {
+          return init({ ...state, date: addDays(state.date, 7) });
+        }
+        case 'day': {
+          return init({ ...state, date: addDays(state.date, 1) });
+        }
+      }
+    }
+    case 'PREV': {
+      switch (state.view) {
+        case 'year': {
+          return init({ ...state, date: addMonths(state.date, -12) });
+        }
+        case 'month': {
+          return init({ ...state, date: addMonths(state.date, -1) });
+        }
+        case 'week': {
+          return init({ ...state, date: addDays(state.date, -7) });
+        }
+        case 'day': {
+          return init({ ...state, date: addDays(state.date, -1) });
+        }
+      }
+    }
   }
 }
 
 function useCalendar({
   date = new Date(),
-  type = 'month',
+  view = 'month',
   weekStartsOn = 0,
 }: {
   date: Date;
-  type: CALENDAR_TYPE;
+  view: CALENDAR_VIEW;
   weekStartsOn: DAY_INDEX;
 }) {
-  const [state] = useReducer(reducer, initialState, function () {
-    return init({ date, type, weekStartsOn });
+  const [state, dispatch] = useReducer(reducer, initialState, function () {
+    return init({ date, view, weekStartsOn });
   });
 
-  return [state];
+  function next() {
+    dispatch({ type: 'NEXT' });
+  }
+
+  function prev() {
+    dispatch({ type: 'PREV' });
+  }
+
+  return [
+    state,
+    {
+      next,
+      prev,
+    },
+  ];
 }
 
 export default useCalendar;
