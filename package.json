@@ -7,13 +7,13 @@
   "types": "dist/typings/index.d.ts",
   "scripts": {
     "build": "npm run build:js && npm run build:types",
+    "build:doc": "ladle build",
     "build:js": "rimraf dist && node ./esbuild.js",
     "build:types": "tsc -p tsconfig.build.json",
-    "build-storybook": "build-storybook",
+    "doc": "ladle serve",
     "format": "prettier --write ./src/**/*.{ts,tsx}",
-    "lint:format": "prettier --check ./src/**/*.{ts,tsx}",
     "lint": "eslint ./src/**/*.{ts,tsx}",
-    "storybook": "start-storybook -p 6006",
+    "lint:format": "prettier --check ./src/**/*.{ts,tsx}",
     "test": "jest --watchAll"
   },
   "license": "MIT",
@@ -23,10 +23,8 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "@babel/preset-typescript": "^7.16.7",
+    "@ladle/react": "^0.8.5",
     "@storybook/addon-actions": "^6.4.19",
-    "@storybook/addon-essentials": "^6.4.19",
-    "@storybook/addon-links": "^6.4.19",
-    "@storybook/react": "^6.1.21",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/react-hooks": "^7.0.2",
@@ -41,7 +39,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "eslint-plugin-storybook": "^0.5.7",
     "install": "^0.13.0",
     "jest": "^27.5.1",
     "jest-watch-typeahead": "^1.0.0",
@@ -59,7 +56,7 @@
   "peerDependencies": {
     "date-fns": ">=2.28.0",
     "prop-types": ">=15.8.1",
-    "react-dom": ">=17.0.2",
-    "react": ">=17.0.2"
+    "react": ">=17.0.2",
+    "react-dom": ">=17.0.2"
   }
 }
