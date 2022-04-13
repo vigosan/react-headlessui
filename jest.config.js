@@ -1,8 +1,8 @@
 module.exports = {
-  roots: ['src'],
+  roots: ['<rootDir>/src'],
   moduleFileExtensions: ['js', 'ts', 'tsx'],
   preset: 'ts-jest',
-  testEnvironment: "jsdom",
+  testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
   watchPlugins: [
     'jest-watch-typeahead/filename',
