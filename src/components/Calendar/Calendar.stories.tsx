@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Calendar from './Calendar';
 
-export function Default() {
+export function Month() {
+  const [weekStartsOn, setWeekStartsOn] = useState(0);
+
   return (
     <Calendar id="birthDate" weekStartsOn={1}>
       <Calendar.Month>
@@ -54,7 +56,11 @@ export function Default() {
                         border: '1px solid black',
                         padding: '8px',
                         background: day.isWeekend ? '#f1f5f9' : '#fff',
-                        color: day.isToday ? '#ff0000' : '#000',
+                        color: day.isToday
+                          ? '#ff0000'
+                          : day.isSameMonth
+                          ? '#000'
+                          : '#ccc',
                       }}
                     >
                       {day.dayOfMonth}

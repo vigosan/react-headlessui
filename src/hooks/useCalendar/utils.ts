@@ -1,109 +1,149 @@
 import {
-  addDays,
-  addMonths,
-  endOfMonth,
-  endOfWeek,
-  format,
-  getDate,
+  addDays as addDaysFn,
+  addMonths as addMonthsFn,
+  eachDayOfInterval as eachDayOfIntervalFn,
+  eachMonthOfInterval as eachMonthOfIntervalFn,
+  eachWeekOfInterval as eachWeekOfIntervalFn,
+  endOfMonth as endOfMonthFn,
+  endOfWeek as endOfWeekFn,
+  endOfYear as endOfYearFn,
+  format as formatFn,
+  getDate as getDateFn,
+  getDayOfYear as getDayOfYearFn,
+  getMonth as getMonthFn,
   getWeek as getWeekFn,
-  getDayOfYear,
-  getDaysInMonth,
-  isLeapYear,
-  isSameDay,
-  isSameMonth,
-  isSameWeek,
-  isSameYear,
-  isWeekend,
-  startOfMonth,
-  startOfWeek,
-  startOfYear,
+  isLeapYear as isLeapYearFn,
+  isSameDay as isSameDayFn,
+  isSameMonth as isSameMonthFn,
+  isSameWeek as isSameWeekFn,
+  isSameYear as isSameYearFn,
+  isWeekend as isWeekendFn,
+  startOfMonth as startOfMonthFn,
+  startOfWeek as startOfWeekFn,
+  startOfYear as startOfYearFn,
 } from 'date-fns';
-import { Year, Month, Week, Day, DAY_INDEX } from './types';
 
-function getDay({ date }: { date: Date }): Day {
+import {
+  Day,
+  DayFormats,
+  DayIndex,
+  DaysOfWeek,
+  Format,
+  Month,
+  MonthFormats,
+  Week,
+  Year,
+} from './types';
+
+export function getDayNames({
+  weekStartsOn = DaysOfWeek.Sunday,
+  format = 'long',
+}: { weekStartsOn?: DayIndex; format?: Format } = {}) {
+  const firstDayOfWeek = startOfWeekFn(new Date(), { weekStartsOn });
+
+  return Array.from(Array(7)).map((_, i) =>
+    formatFn(addDaysFn(firstDayOfWeek, i), DayFormats[format]),
+  );
+}
+
+export function getMonthNames({ format = 'long' }: { format?: Format } = {}) {
+  const firstDayOfYear = startOfYearFn(new Date());
+
+  return Array.from(Array(12)).map((_, i) =>
+    formatFn(addMonthsFn(firstDayOfYear, i), MonthFormats[format]),
+  );
+}
+
+export function getDay({
+  date,
+  currentMonth = new Date(),
+}: {
+  date: Date;
+  currentMonth?: Date;
+}): Day {
+  const now = new Date();
+  const dayIndex = date.getDay();
+
   return {
-    dayOfWeek: format(date, 'EEEE'),
-    dayOfMonth: getDate(date),
-    dayOfYear: getDayOfYear(date),
-    isToday: isSameDay(date, new Date()),
-    isWeekend: isWeekend(date),
+    dayIndex,
+    dayOfMonth: getDateFn(date),
+    dayOfWeek: formatFn(date, 'EEEE'),
+    dayOfYear: getDayOfYearFn(date),
+    isSameMonth: isSameMonthFn(date, currentMonth),
+    isToday: isSameDayFn(date, now),
+    isWeekend: isWeekendFn(date),
   };
 }
 
-function getWeek({ date }: { date: Date }): Week {
-  let currentDate = date;
-  const days = [];
-
-  for (let day = 0; day < 7; day++) {
-    days.push(getDay({ date: currentDate }));
-    currentDate = addDays(currentDate, 1);
-  }
+export function getWeek({
+  date,
+  weekStartsOn = DaysOfWeek.Sunday,
+  currentMonth = new Date(),
+}: {
+  date: Date;
+  weekStartsOn?: DayIndex;
+  currentMonth?: Date;
+}): Week {
+  const now = new Date();
+  const start = startOfWeekFn(date, { weekStartsOn });
+  const end = endOfWeekFn(date, { weekStartsOn });
+  const days = eachDayOfIntervalFn({
+    start,
+    end,
+  }).map((d) => getDay({ date: d, currentMonth }));
 
   return {
-    weekOfYear: getWeekFn(date),
-    isCurrent: isSameWeek(date, new Date()),
     days,
+    isCurrent: isSameWeekFn(date, now),
+    weekOfYear: getWeekFn(date),
   };
 }
 
-function getWeeksOfMonth({
+export function getMonth({
   date,
-  weekStartsOn,
+  weekStartsOn = DaysOfWeek.Sunday,
 }: {
   date: Date;
-  weekStartsOn: DAY_INDEX;
-}): Week[] {
-  const firstDayOfMonth = startOfMonth(date);
-  const lastDayOfMonth = endOfMonth(date);
-  const firstDay = startOfWeek(firstDayOfMonth, { weekStartsOn });
-  const lastDay = endOfWeek(lastDayOfMonth, { weekStartsOn });
-  const weeks = [];
-
-  let currentDate = firstDay;
-  while (currentDate <= lastDay) {
-    weeks.push(getWeek({ date: currentDate }));
-    currentDate = addDays(currentDate, 7);
-  }
-
-  return weeks;
-}
-
-function getMonth({
-  date,
-  weekStartsOn,
-}: {
-  date: Date;
-  weekStartsOn: DAY_INDEX;
+  weekStartsOn?: DayIndex;
 }): Month {
+  const now = new Date();
+  const firstDayOfMonth = startOfMonthFn(date);
+  const lastDayOfMonth = endOfMonthFn(date);
+  const weeks = eachWeekOfIntervalFn(
+    {
+      start: firstDayOfMonth,
+      end: lastDayOfMonth,
+    },
+    { weekStartsOn },
+  ).map((d) => getWeek({ date: d, weekStartsOn, currentMonth: date }));
+
   return {
-    monthOfYear: format(date, 'LLLL'),
-    daysInMonth: getDaysInMonth(date),
-    isCurrent: isSameMonth(date, new Date()),
-    weeks: getWeeksOfMonth({ date, weekStartsOn }),
+    isCurrent: isSameMonthFn(date, now),
+    monthIndex: getMonthFn(date),
+    monthOfYear: formatFn(date, 'LLLL'),
+    weeks,
   };
 }
 
-function getYear({
+export function getYear({
   date,
-  weekStartsOn,
+  weekStartsOn = DaysOfWeek.Sunday,
 }: {
   date: Date;
-  weekStartsOn: DAY_INDEX;
+  weekStartsOn?: DayIndex;
 }): Year {
-  const months = [];
-
-  let currentDate = startOfYear(date);
-  for (let month = 0; month < 12; month++) {
-    months.push(getMonth({ date: currentDate, weekStartsOn }));
-    currentDate = addMonths(currentDate, 1);
-  }
+  const now = new Date();
+  const start = startOfYearFn(date);
+  const end = endOfYearFn(date);
+  const months = eachMonthOfIntervalFn({
+    start,
+    end,
+  }).map((d) => getMonth({ date: d, weekStartsOn }));
 
   return {
-    year: date.getFullYear(),
+    isCurrent: isSameYearFn(date, now),
+    isLeap: isLeapYearFn(date),
     months,
-    isCurrent: isSameYear(date, new Date()),
-    isLeap: isLeapYear(date),
+    year: date.getFullYear(),
   };
 }
-
-export { getYear, getMonth, getWeek, getDay };

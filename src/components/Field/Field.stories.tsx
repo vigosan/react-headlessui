@@ -11,5 +11,5 @@ export const Default = () => {
 };
 
 export default {
-  title: "Field",
+  title: 'Field',
 };
