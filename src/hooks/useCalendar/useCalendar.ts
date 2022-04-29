@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useReducer } from 'react';
 import {
   CalendarViews,
   CalendarView,
@@ -16,36 +16,21 @@ type ACTIONTYPE = { type: 'PREV' } | { type: 'NEXT' };
 
 type State =
   | {
-      props: { date: Date; view: 'year'; weekStartsOn: DayIndex };
+      props: { date: Date; view: CalendarViews.year; weekStartsOn: DayIndex };
       calendar: Year;
     }
   | {
-      props: { date: Date; view: 'month'; weekStartsOn: DayIndex };
+      props: { date: Date; view: CalendarViews.month; weekStartsOn: DayIndex };
       calendar: Month;
     }
   | {
-      props: { date: Date; view: 'week'; weekStartsOn: DayIndex };
+      props: { date: Date; view: CalendarViews.week; weekStartsOn: DayIndex };
       calendar: Week;
     }
   | {
-      props: { date: Date; view: 'day'; weekStartsOn: DayIndex };
+      props: { date: Date; view: CalendarViews.day; weekStartsOn: DayIndex };
       calendar: Day;
     };
-
-const initialState = {
-  props: {
-    date: new Date(),
-    view: CalendarViews.month,
-    weekStartsOn: DaysOfWeek.Sunday,
-  },
-  calendar: {
-    days: [],
-    weeks: [],
-    months: [],
-    years: [],
-    
-  },
-};
 
 function init({
   date,
@@ -55,30 +40,30 @@ function init({
   date: Date;
   view: CalendarView;
   weekStartsOn: DayIndex;
-}) {
+}): State {
   switch (view) {
     case CalendarViews.day: {
       return {
-        props: { date, view, weekStartsOn },
+        props: { date, view: CalendarViews.day, weekStartsOn },
         calendar: getDay({ date }),
       };
     }
     case CalendarViews.week: {
       return {
-        props: { date, view, weekStartsOn },
+        props: { date, view: CalendarViews.week, weekStartsOn },
         calendar: getWeek({ date, weekStartsOn }),
-      };
-    }
-    case CalendarViews.month: {
-      return {
-        props: { date, view, weekStartsOn },
-        calendar: getMonth({ date, weekStartsOn }),
       };
     }
     case CalendarViews.year: {
       return {
-        props: { date, view, weekStartsOn },
+        props: { date, view: CalendarViews.year, weekStartsOn },
         calendar: getYear({ date, weekStartsOn }),
+      };
+    }
+    default: {
+      return {
+        props: { date, view: CalendarViews.month, weekStartsOn },
+        calendar: getMonth({ date, weekStartsOn }),
       };
     }
   }
@@ -130,13 +115,8 @@ function useCalendar({
   view?: CalendarView;
   weekStartsOn?: DayIndex;
 }) {
-  const [state, dispatch] = React.useReducer(
-    reducer,
-    initialState,
-    function () {
-      return init({ date, view, weekStartsOn });
-    },
-  );
+  const initialState = init({ date, view, weekStartsOn });
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   function next() {
     dispatch({ type: 'NEXT' });

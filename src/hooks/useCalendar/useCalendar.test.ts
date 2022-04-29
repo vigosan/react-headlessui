@@ -901,7 +901,7 @@ describe('useCalendar', function () {
   test('year starting on Sunday', function () {
     const date = new Date(thatDay);
     const { result } = renderHook(() => useCalendar({ date, view: 'year' }));
-    const [year] = result.current;
+    const [year] = result.current as [Year];
 
     expect(year.isCurrent).toBe(true);
     expect(year.isLeap).toBe(false);
