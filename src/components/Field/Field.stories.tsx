@@ -6,6 +6,7 @@ export const Default = () => {
     <Field id="firstName">
       <Field.Label>First Name</Field.Label>
       <Field.Input />
+      <Field.Error>Is required</Field.Error>
     </Field>
   );
 };

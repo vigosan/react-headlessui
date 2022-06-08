@@ -5,9 +5,20 @@ const Input = React.forwardRef<
   HTMLInputElement,
   React.ComponentPropsWithoutRef<'input'>
 >((props, ref) => {
-  const { id } = useContext(Context);
+  const { id, isInvalid } = useContext(Context);
 
-  return <input ref={ref} id={id} {...props} />;
+  // TODO move logic to useInput
+  return (
+    <input
+      ref={ref}
+      id={id}
+      {...(isInvalid && {
+        'aria-invalid': true,
+        'aria-describedby': `${id}Des`,
+      })}
+      {...props}
+    />
+  );
 });
 
 Input.displayName = 'Field.Input';
